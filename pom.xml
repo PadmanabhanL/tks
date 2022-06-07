@@ -152,9 +152,6 @@
     <module>gateway</module>
         	  
     
-    <module>reviews-service</module>
-          
-    
     <module>review-service</module>
       
   </modules>
