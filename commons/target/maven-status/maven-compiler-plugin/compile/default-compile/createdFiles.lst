@@ -1,0 +1,6 @@
+com\sap\refapps\espm\model\SalesOrder.class
+com\sap\refapps\espm\model\SalesOrderRepository.class
+com\sap\refapps\espm\model\Tax.class
+com\sap\refapps\espm\config\LocalDataSourceConfig.class
+com\sap\refapps\espm\config\HanaDataSourceConfig.class
+com\sap\refapps\espm\config\EspmJpaConfig.class

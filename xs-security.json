@@ -1,0 +1,41 @@
+{
+	"xsappname": "espm-cloud-native-uaa",
+	"tenant-mode": "dedicated",
+	"authorities":["$ACCEPT_GRANTED_AUTHORITIES"],
+	"scopes": [
+		{
+			"name": "$XSAPPNAME.Display",
+			"description": "display"
+		},
+		{
+			"name": "$XSAPPNAME.Update",
+			"description": "Update "
+		},
+		{
+			"name": "$XSAPPNAME.Create",
+			"description": "create"
+		},
+		{
+			"name": "$XSAPPNAME.Delete",
+			"description": "delete"
+		}
+	],
+	"role-templates": [
+		{
+			"name": "Retailer",
+			"description": "Retailer role for the app",
+			"scope-references": [
+				"$XSAPPNAME.Update"
+			]
+		}
+	],
+	"role-collections": [
+    	{
+        	"name": "Retailer-RoleCollection",
+        	"description": "retailer roles for espm cloud native",
+        	"role-template-references": [
+            "$XSAPPNAME.Retailer"
+        	]
+    	}
+	]
+}

@@ -1,0 +1,322 @@
+_schema-version: "2.0.0"
+ID: cloud-espm-cloud-native
+version: 1.2.0
+parameters:
+  enable-parallel-deployments: true
+
+modules:
+  # the parent and the commons module needs to be build, 
+  # but not deployed as these are not microservices. They contain the libraries, helper classes
+  - name: parent
+    type: java.tomcat
+    path: .
+    build-parameters:
+      builder: custom
+      supported-platforms: []
+      commands:
+        - mvn -N install
+      timeout: 60m
+  # - name: review-parent
+  #   type: java
+  #   path: review-service
+  #   build-parameters:
+  #     builder: custom
+  #     supported-platforms: []
+  #     commands:
+  #      - npm install --production
+  #      - npx -p @sap/cds-dk cds build --production
+
+  - name: commons
+    type: java.tomcat
+    path: commons
+    build-parameters:
+      builder: custom
+      supported-platforms: []
+      commands:
+        - mvn clean install
+      timeout: 60m
+      
+  - name: espm-product-svc
+    type: java.tomcat
+    path: product-service
+    build-parameters:
+      builder: maven
+      build-result: "target/product-service-1.2.0.jar"
+      timeout: 60m
+      buildpack: https://github.com/cloudfoundry/java-buildpack.git
+    properties:
+      TARGET_RUNTIME: tomcat
+    requires:
+      - name: espm-hana-db
+      - name: espm-xsuaa
+    parameters:
+      memory: 1G
+    provides:
+      - name: product-service
+        properties:
+          product-url: "${default-url}"
+      - name: stock-service
+        properties:
+          product-url: "${default-url}"
+          
+  - name: espm-customer-svc
+    type: java.tomcat
+    path: customer-service
+    build-parameters:
+      builder: maven
+      build-result: "target/customer-service-1.2.0.jar"
+      timeout: 60m
+      buildpack: https://github.com/cloudfoundry/java-buildpack.git
+    properties:
+      TARGET_RUNTIME: tomcat
+    requires:
+      - name: espm-hana-db
+    parameters:
+      memory: 512M
+    provides:
+      - name: customer-service
+        properties:
+          customer-url: "${default-url}"
+
+  - name: espm-sales-svc
+    type: java.tomcat
+    path: sale-service
+    build-parameters:
+      builder: maven
+      build-result: "target/sale-service-1.2.0.jar"
+      timeout: 60m
+      buildpack: https://github.com/cloudfoundry/java-buildpack.git
+    deployed-after:
+      - espm-product-svc
+    properties:
+      TARGET_RUNTIME: tomcat
+      QUEUE_NAME:  "i316688/tks/paddyEM/salesorderqueue"
+      PROD_SERVICE: ~{product-service/product-url}
+    requires:
+      - name: espm-hana-db
+      - name: espm-em
+      - name: espm-destination
+      - name: espm-xsuaa
+      - name: product-service
+        group: destinations
+        properties:
+          name: product-service
+          product-url: '~{product-url}'
+          forwardAuthToken: true
+    parameters:
+      memory: 512M
+    provides:
+      - name: sales-service
+        properties:
+          sale-url: "${default-url}"
+
+  - name: espm-worker
+    type: java.tomcat
+    path: worker
+    build-parameters:
+      builder: maven
+      build-result: "target/worker-1.2.0.jar"
+      timeout: 60m
+      buildpack: https://github.com/cloudfoundry/java-buildpack.git
+    properties:
+      TARGET_RUNTIME: tomcat
+      QUEUE_NAME:  "i316688/tks/paddyEM/salesorderqueue"
+      spring.main.allow-circular-references: true
+    requires:
+      - name: espm-hana-db
+      - name: espm-em
+    parameters:
+      memory: 512M
+      no-host: true
+      health-check-type: process
+
+  - name: review-parent
+    type: java
+    path: review-service
+    build-parameters:
+      builder: custom
+      supported-platforms: []
+      commands:
+        - npm install --production
+        - npx -p @sap/cds-dk cds build --production
+
+  # --------------------- SERVER MODULE ------------------------
+  - name: review-srv
+    # ------------------------------------------------------------
+    type: java
+    path: review-service/srv
+    parameters:
+      memory: 512M
+      disk-quota: 256M
+      buildpack: sap_java_buildpack
+    properties:
+      SPRING_PROFILES_ACTIVE: cloud
+    build-parameters:
+      builder: custom
+      commands:
+        - mvn clean package -DskipTests=true
+      build-result: target/*-exec.jar
+    requires:
+      - name: review-db
+    provides:
+      - name: review-service
+        properties:
+          review-url: '${default-url}'
+
+  # -------------------- SIDECAR MODULE ------------------------
+  - name: espm-db-deployer
+    # ------------------------------------------------------------
+    type: nodejs
+    path: review-service/db
+    parameters:
+      memory: 256M
+      disk-quota: 512M
+      no-route: true
+      no-start: true
+      tasks:    # execute hdi deployer on app creation/update
+        - name: hdi-deploy
+          command: npm run start -- --exit
+    requires:
+      # Set user and password to secure rest API via basic authentication
+      - name: review-db
+
+  - name: espm-gateway
+    type: html5
+    path: gateway
+    parameters:
+      version: 2.0-${timestamp}
+      memory: 1G
+    properties:
+    deployed-after:
+      - espm-product-svc
+      - espm-customer-svc
+      - espm-sales-svc
+      - review-srv
+    build-parameters:
+      builder: npm
+      #build-result: dist
+      timeout: 60m
+      buildpack: https://github.com/cloudfoundry/nodejs-buildpack.git
+    requires:
+      - name: espm-xsuaa
+      - name: product-service
+        group: destinations
+        properties:
+          name: product-service
+          url: '~{product-url}'
+          forwardAuthToken: true
+      - name: stock-service
+        group: destinations
+        properties:
+          name: stock-service
+          url: '~{product-url}'
+          forwardAuthToken: true
+      - name: sales-service
+        group: destinations
+        properties:
+          name: sales-service
+          url: '~{sale-url}'
+          forwardAuthToken: true
+      - name: customer-service
+        group: destinations
+        properties:
+          name: customer-service
+          url: '~{customer-url}'
+          forwardAuthToken: true
+      - name: review-service
+        group: destinations
+        properties:
+          name: review-service
+          url: '~{review-url}'
+          forwardAuthToken: true
+    provides:
+      - name: ui
+        properties:
+          url: "${default-url}"
+
+# --------------------- SERVER MODULE ------------------------
+#   - name: review-srv
+# # ------------------------------------------------------------
+#     type: java
+#     path: review-service/srv
+#     parameters:
+#       memory: 1024M
+#       disk-quota: 256M
+#       buildpack: sap_java_buildpack
+#     properties:
+#       SPRING_PROFILES_ACTIVE: cloud
+#     build-parameters:
+#       builder: custom
+#       commands:
+#         - mvn clean package -DskipTests=true
+#       build-result: target/*-exec.jar
+#     requires:
+#       - name: review-db
+#     provides:
+#       - name: review-service
+#         properties:
+#           review-url: '${default-url}'
+
+  # For Review Service
+  # - name: espm-db-deployer
+  #   type: nodejs
+  #   path: review-service/db
+  #   parameters:
+  #     memory: 256M
+  #     disk-quota: 512M
+  #     no-route: true
+  #     no-start: true
+  #     tasks:    # execute hdi deployer on app creation/update
+  #     - name: hdi-deploy
+  #       command: npm run start
+  #   requires:
+  #     # Set user and password to secure rest API via basic authentication
+  #     - name: review-db
+
+
+resources:
+  # For Review Service
+  # - name: review-db
+  #   type: com.sap.xs.hdi-container
+  #   parameters:
+  #     service: hana
+  #     service-plan: hdi-shared
+  #   properties:
+  #     hdi-service-name: ${service-name}
+
+  - name: espm-em
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: enterprise-messaging
+      service-plan: default
+      path: em-default.json
+      
+  - name: espm-destination
+    type: destination
+    parameters:
+      service: destination
+      service-plan: lite
+      
+  - name: espm-hana-db
+    type: com.sap.xs.hana-schema
+    parameters:
+      service: hana
+      service-plan: schema
+      #config:
+        #database_id:  <database_guid>
+  - name: review-db
+    # ------------------------------------------------------------
+    type: com.sap.xs.hdi-container
+    parameters:
+      service: hana
+      service-plan: hdi-shared
+
+    properties:
+      hdi-service-name: ${service-name}
+
+  - name: espm-xsuaa
+    parameters:
+      path: ./xs-security.json
+      service-plan: application
+      service: xsuaa
+    type: org.cloudfoundry.managed-service

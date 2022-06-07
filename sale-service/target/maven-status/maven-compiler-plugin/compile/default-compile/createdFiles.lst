@@ -1,0 +1,16 @@
+com\sap\refapps\espm\controller\SalesOrderController.class
+com\sap\refapps\espm\util\SalesOrderLifecycleStatusNameEnum.class
+com\sap\refapps\espm\service\AbstractSalesOrderService.class
+com\sap\refapps\espm\config\EnterpriseMessagingConfig.class
+com\sap\refapps\espm\config\DefaultSecurityConfig.class
+com\sap\refapps\espm\service\CloudSalesOrderService.class
+com\sap\refapps\espm\Application.class
+com\sap\refapps\espm\service\QueueDispatcherService.class
+com\sap\refapps\espm\config\SaleApplicationContextInitializer.class
+com\sap\refapps\espm\util\ResilienceHandler.class
+com\sap\refapps\espm\util\SalesOrderLifecycleStatusEnum.class
+com\sap\refapps\espm\config\RabbitConfig.class
+com\sap\refapps\espm\config\WebSecurityConfig.class
+com\sap\refapps\espm\service\DestinationService.class
+com\sap\refapps\espm\service\SalesOrderService.class
+com\sap\refapps\espm\service\LocalSalesOrderService.class

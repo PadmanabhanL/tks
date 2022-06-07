@@ -1,0 +1,13 @@
+{
+  "build": {
+    "target": "."
+  },
+  "requires": {
+    "db": {
+      "kind": "hana-cloud"
+    },
+    "hana" : { 
+      "deploy-format": "hdbtable" 
+    }
+  }
+}

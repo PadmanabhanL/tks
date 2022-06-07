@@ -1,0 +1,11 @@
+---
+applications:
+- name: espm-tax-service
+  host: <unique-id>-espm-tax-service
+  memory: 1024M
+  instances: 1
+  path: target/tax-service.jar
+  env:
+    SPRING_PROFILES_DEFAULT: cf
+  services:
+    - espm-xsuaa-tax

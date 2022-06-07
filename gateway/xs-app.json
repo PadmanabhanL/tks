@@ -1,0 +1,74 @@
+{
+  "welcomeFile": "/webapp/webshop/index.html",
+  "authenticationMethod": "route",
+  "logout": {
+    "logoutEndpoint": "/do/logout"
+  },
+  "routes": [
+	{
+	  "source": "^/product.svc/api/v1/products/(.*)",
+	  "destination": "product-service",
+	  "csrfProtection": false,
+	  "httpMethods": ["GET"]
+	},
+	{
+	  "source": "^/product.svc/api/v1/stocks/(.*)",
+	  "destination": "stock-service",
+	  "csrfProtection": false,
+	  "httpMethods": ["GET"]
+	},
+	{
+	  "source": "^/product.svc/api/v1/stocks/(.*)",
+	  "destination": "stock-service",
+	  "csrfProtection": false,
+	  "scope": "$XSAPPNAME.Update",
+	  "httpMethods": ["PUT"]
+	},
+	{
+	  "source": "^/customer.svc/api/(.*)",
+	  "destination": "customer-service",
+	  "csrfProtection": false,
+	  "httpMethods": ["GET","POST","PUT","DELETE"]
+	},
+	{
+	  "source": "^/sale.svc/api/(.*)",
+	  "destination": "sales-service",
+	  "csrfProtection": false,
+	  "scope": "$XSAPPNAME.Update",
+	  "httpMethods": ["PUT"]
+	},
+	{
+	  "source": "^/sale.svc/api/(.*)",
+	  "destination": "sales-service",
+	  "csrfProtection": false,
+	  "httpMethods": ["GET","POST"]
+	},
+    {
+      "source": "^/webapp/retailer/(.*)",
+      "localDir": ".",
+      "replace": {
+        "pathSuffixes": [
+          "index.html"
+        ]
+	  },
+	  "scope": "$XSAPPNAME.Update",
+	  "authenticationType": "xsuaa"
+    },
+    {
+      "source": "^/webapp/webshop/(.*)",
+      "localDir": ".",
+      "replace": {
+        "pathSuffixes": [
+          "index.html"
+        ]
+      },
+	"authenticationType": "xsuaa"
+    },
+	{
+		  "source": "^/odata/v4/ReviewService/Reviews",
+		  "destination": "review-service",
+		  "csrfProtection": false,
+		  "httpMethods": ["GET","POST"]
+	}
+  ]
+}

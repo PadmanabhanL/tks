@@ -1,0 +1,3 @@
+com\sap\refapps\espm\service\CustomerServiceTest.class
+com\sap\refapps\espm\controller\CustomerControllerTest.class
+com\sap\refapps\espm\config\H2JPAConfig.class

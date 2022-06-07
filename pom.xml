@@ -1,0 +1,554 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    	
+  
+  <modelVersion>4.0.0</modelVersion>
+    	
+  
+  <groupId>com.sap.refapps.espm</groupId>
+    	
+  
+  <artifactId>espm-cn</artifactId>
+    	
+  
+  <version>1.2.0</version>
+    	
+  
+  <packaging>pom</packaging>
+    	
+  
+  <properties>
+        	    
+    
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        		 
+    
+    <spring-boot.version>2.6.6</spring-boot.version>
+        		
+    
+    <java.version>1.8</java.version>
+        		
+    
+    <log4j2.version>2.17.1</log4j2.version>
+        		
+    
+    <postgresql.version>42.2.19</postgresql.version>
+        		
+    
+    <version.xbem.client>2.0.7</version.xbem.client>
+        		
+    
+    <maven-jar-plugin.version>3.2.0</maven-jar-plugin.version>
+        		
+    
+    <sap.cloud.security.version>2.11.15</sap.cloud.security.version>
+        		
+    
+    <apache.httpclient.version>4.5.13</apache.httpclient.version>
+        		
+    
+    <resilience4j.version>1.7.0</resilience4j.version>
+        				 
+    
+    <maven.compiler.source>${java.version}</maven.compiler.source>
+                
+    
+    <maven.compiler.target>${java.version}</maven.compiler.target>
+                
+    
+    <maven.compiler.testSource>${java.version}</maven.compiler.testSource>
+                
+    
+    <maven.compiler.testTarget>${java.version}</maven.compiler.testTarget>
+        		        		
+    
+    <surefire.skipTests>false</surefire.skipTests>
+        		
+    
+    <surefire.forkCount>1</surefire.forkCount>
+        		
+    
+    <surefire.include>UnitTest.java</surefire.include>
+        		
+    
+    <surefire.exclude/>
+        		
+    
+    <surefire.groups/>
+        		
+    
+    <surefire.excludedGroups/>
+        		
+    
+    <surefire.maxMemorySize>1024m</surefire.maxMemorySize>
+        		
+    
+    <surefire.logLevel>info</surefire.logLevel>
+        		
+    
+    <argLine>-Xmx${surefire.maxMemorySize}
+			-Dorg.slf4j.simpleLogger.defaultLogLevel=${surefire.logLevel}</argLine>
+        		
+    
+    <jacoco.executionDataFile>${project.build.directory}/coverage-reports/jacoco.exec</jacoco.executionDataFile>
+        		
+    
+    <jacoco.includes>*</jacoco.includes>
+        		
+    
+    <jacoco.excludes>org.apache.*</jacoco.excludes>
+        		
+
+        
+    
+    <project.build.resourceEncoding>UTF-8</project.build.resourceEncoding>
+                
+    
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+                
+    
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        	
+  
+  </properties>
+    	
+  
+  <parent>
+        		
+    
+    <groupId>org.springframework.boot</groupId>
+        		
+    
+    <artifactId>spring-boot-starter-parent</artifactId>
+        		
+    
+    <version>2.6.6</version>
+        	
+  
+  </parent>
+    	
+  
+  <modules>
+        		
+    
+    <module>tax-service</module>
+        		
+    
+    <module>commons</module>
+        		
+    
+    <module>product-service</module>
+        		
+    
+    <module>customer-service</module>
+        		
+    
+    <module>sale-service</module>
+        		
+    
+    <module>worker</module>
+        		
+    
+    <module>gateway</module>
+        	  
+    
+    <module>reviews-service</module>
+          
+    
+    <module>review-service</module>
+      
+  </modules>
+    	
+  
+  <dependencyManagement>
+        		
+    
+    <dependencies>
+            			
+      
+      <!-- Spring cloud service connector -->
+            			
+      
+      <dependency>
+                				
+        
+        <groupId>org.springframework.cloud</groupId>
+                				
+        
+        <artifactId>spring-cloud-spring-service-connector</artifactId>
+                				
+        
+        <version>2.0.7.RELEASE</version>
+                			
+      
+      </dependency>
+            			
+      
+      <!-- Spring cloud cloudfoundry connector -->
+            			
+      
+      <dependency>
+                				
+        
+        <groupId>org.springframework.cloud</groupId>
+                				
+        
+        <artifactId>spring-cloud-cloudfoundry-connector</artifactId>
+                				
+        
+        <version>2.0.7.RELEASE</version>
+                			
+      
+      </dependency>
+            			
+      
+      <!-- Spring retry -->
+            			
+      
+      <dependency>
+                				
+        
+        <groupId>org.springframework.retry</groupId>
+                				
+        
+        <artifactId>spring-retry</artifactId>
+                				
+        
+        <version>1.3.1</version>
+                			
+      
+      </dependency>
+            			
+      
+      <!-- Cloud sdk -->
+            			
+      
+      <dependency>
+                				
+        
+        <groupId>com.sap.cloud.sdk</groupId>
+                				
+        
+        <artifactId>sdk-bom</artifactId>
+                				
+        
+        <version>3.67.0</version>
+                				
+        
+        <type>pom</type>
+                				
+        
+        <scope>import</scope>
+                			
+      
+      </dependency>
+            			
+      
+      <dependency>
+                                
+        
+        <groupId>org.springframework.boot</groupId>
+                                
+        
+        <artifactId>spring-boot-dependencies</artifactId>
+                                
+        
+        <version>2.6.6</version>
+                                
+        
+        <type>pom</type>
+                                
+        
+        <scope>import</scope>
+                            
+      
+      </dependency>
+            			
+			
+      
+      <!-- xbem -->
+            			
+      
+      <dependency>
+                				
+        
+        <groupId>com.sap.cloud.servicesdk.xbem</groupId>
+                				
+        
+        <artifactId>emjapi-connector-sap-cp</artifactId>
+                				
+        
+        <version>${version.xbem.client}</version>
+                			
+      
+      </dependency>
+            			
+      
+      <dependency>
+                				
+        
+        <groupId>com.sap.cloud.servicesdk.xbem</groupId>
+                				
+        
+        <artifactId>emjapi-core</artifactId>
+                				
+        
+        <version>${version.xbem.client}</version>
+                			
+      
+      </dependency>
+            			
+      
+      <dependency>
+                				
+        
+        <groupId>com.sap.cloud.servicesdk.xbem</groupId>
+                				
+        
+        <artifactId>emjapi-extension-sap-cp-jms</artifactId>
+                				
+        
+        <version>${version.xbem.client}</version>
+                			
+      
+      </dependency>
+            			
+      
+      <!-- netty needed while working with JMS of EM https://mvnrepository.com/artifact/io.netty/netty-handler -->
+            			
+      
+      <dependency>
+                				
+        
+        <groupId>io.netty</groupId>
+                				
+        
+        <artifactId>netty-handler</artifactId>
+                				
+        
+        <version>4.1.46.Final</version>
+                			
+      
+      </dependency>
+            			
+      
+      <dependency>
+                				
+        
+        <groupId>com.sap.cloud.db.jdbc</groupId>
+                				
+        
+        <artifactId>ngdbc</artifactId>
+                				
+        
+        <version>2.12.7</version>
+                			
+      
+      </dependency>
+            			
+      
+      <dependency>
+                				
+        
+        <groupId>org.hamcrest</groupId>
+                				
+        
+        <artifactId>hamcrest-library</artifactId>
+                				
+        
+        <version>2.2</version>
+                				
+        
+        <scope>test</scope>
+                			
+      
+      </dependency>
+            			
+      
+      <dependency>
+                                
+        
+        <groupId>javax.validation</groupId>
+                                
+        
+        <artifactId>validation-api</artifactId>
+                                
+        
+        <version>2.0.1.Final</version>
+                            
+      
+      </dependency>
+             
+
+		
+    
+    </dependencies>
+        	
+  
+  </dependencyManagement>
+    	
+  
+  <build>
+                
+    
+    <pluginManagement>
+                        
+      
+      <plugins>
+                                
+        
+        <plugin>
+                                        
+          
+          <groupId>org.apache.maven.plugins</groupId>
+                                        
+          
+          <artifactId>maven-pmd-plugin</artifactId>
+                                        
+          
+          <configuration>
+                                                
+            
+            <rulesets>
+                                                        
+              
+              <ruleset>rulesets/cloud-sdk-qualities.xml</ruleset>
+                                                        
+              
+              <ruleset>rulesets/java/maven-pmd-plugin-default.xml</ruleset>
+                                                    
+            
+            </rulesets>
+                                            
+          
+          </configuration>
+                                        
+          
+          <dependencies>
+                                                
+            
+            <dependency>
+                                                        
+              
+              <groupId>com.sap.cloud.sdk.quality</groupId>
+                                                        
+              
+              <artifactId>pmd-rules</artifactId>
+                                                        
+              
+              <version>3.63.0</version>
+                                                    
+            
+            </dependency>
+                                            
+          
+          </dependencies>
+                                    
+        
+        </plugin>
+                            
+      
+      </plugins>
+                    
+    
+    </pluginManagement>
+        		 
+    
+    <plugins>
+                        
+      
+      <plugin>
+                                
+        
+        <groupId>org.apache.maven.plugins</groupId>
+                                
+        
+        <artifactId>maven-enforcer-plugin</artifactId>
+                                
+        
+        <version>3.0.0</version>
+                                
+        
+        <executions>
+                                        
+          
+          <execution>
+                                                
+            
+            <id>SAP Cloud SDK Project Structure Checks</id>
+                                                
+            
+            <goals>
+                                                        
+              
+              <goal>enforce</goal>
+                                                    
+            
+            </goals>
+                                                
+            
+            <configuration>
+                                                        
+              
+              <rules>
+                                                                
+                
+                <requireMavenVersion>
+                                                                        
+                  
+                  <version>3.5</version>
+                                                                    
+                
+                </requireMavenVersion>
+                                                                
+                
+                <requireJavaVersion>
+                                                                        
+                  
+                  <version>${java.version}</version>
+                                                                    
+                
+                </requireJavaVersion>
+                                                                
+                
+                <requireProperty>
+                                                                        
+                  
+                  <property>project.artifactId</property>
+                                                                        
+                  
+                  <regex>[^_]+</regex>
+                                                                        
+                  
+                  <regexMessage>"The artifactId should not contain underscores (_) as this causes issues when deploying to Cloud Foundry."</regexMessage>
+                                                                    
+                
+                </requireProperty>
+                                                                
+                            
+              
+              </rules>
+                                                        
+              
+              <fail>true</fail>
+                                                    
+            
+            </configuration>
+                                            
+          
+          </execution>
+                                    
+        
+        </executions>
+                            
+      
+      </plugin>
+                    
+    
+    </plugins>
+        		
+  
+  </build>
+    
+
+</project>

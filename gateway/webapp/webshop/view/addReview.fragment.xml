@@ -1,0 +1,43 @@
+<core:FragmentDefinition
+	xmlns="sap.m"
+    xmlns:l="sap.ui.layout"
+xmlns:f="sap.ui.layout.form" 
+	xmlns:core="sap.ui.core">
+	<Dialog
+		id="addReview"
+		title="Add Review">
+        <f:SimpleForm 
+        editable="true"
+        layout="ResponsiveGridLayout"
+        labelSpanXL="3"
+        labelSpanL="3"
+        labelSpanM="3"
+        labelSpanS="12"
+        adjustLabelSpan="false"
+        emptySpanXL="4"
+        emptySpanL="4"
+        emptySpanM="4"
+        emptySpanS="0"
+        columnsXL="1"
+        columnsL="1"
+        columnsM="1"
+        singleContainerFullSize="false" >
+        <f:content>
+        	<Label text="Rating" />
+        	<RatingIndicator id="rating" />
+            <Label text="comments" />
+            <Input id="comments" />
+        </f:content>
+    </f:SimpleForm>
+		<buttons>
+			<Button
+				text="AddReview"
+                type="Emphasized"
+				press=".onAddReview"/>
+                <Button
+				text="Cancel"
+                type="Transparent"
+				press=".onCloseDialog"/>
+        </buttons>
+	</Dialog>
+</core:FragmentDefinition>

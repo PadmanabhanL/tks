@@ -1,0 +1,9 @@
+---
+applications:
+  - name: espm-logistics-service
+    host: <unique-id>-espm-logistics-service
+    memory: 1024M
+    instances: 1
+    path: target/logistics-service-0.0.1-SNAPSHOT.jar
+    env:
+      SPRING_PROFILES_DEFAULT: cf
