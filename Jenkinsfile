@@ -9,7 +9,7 @@ pipeline {
                 checkout scm
                 script{
                    
-                        sh "mvn clean install"
+                        sh "mbt build -p=cloud"
                 }
             }
         }
