@@ -75,13 +75,18 @@
 							<Label id="commentLbl" text="{i18n>detail.comment}"/>
 						</header>
 					</Column>
-					<Column demandPopin="true" hAlign="Left" id="linksColumn" minScreenWidth="Tablet" vAlign="Top" width="12rem"/>
+					<Column demandPopin="true" hAlign="Left" id="createdAtColumn" minScreenWidth="Tablet" vAlign="Top" width="25%">
+						<header>
+							<Label id="createdAtLbl" text="Created At"/>
+						</header>
+					</Column>
 				</columns>
 				<ColumnListItem id="reviewListItem">
 					<cells >
 						<RatingIndicator class="sapMTableContentMargin" enabled="false" iconSize='0.875rem' id="ratingIndicatorControl" maxValue="5" value="{path:'reviewsModel>rating',	formatter:'.formatter.formatRating'}"/>
 						<Text class="sapMTableContentMargin" id="firstName" text="{reviewsModel>customerName}"/>
 						<Text class="sapMTableContentMargin" id="commentTxt" text="{reviewsModel>comments}"/>
+						<Text class="sapMTableContentMargin" id="createdAtTxt" text="{reviewsModel>createdAt}"/>
 					</cells>
 				</ColumnListItem>
 				<!--  <ColumnListItem id="reviewListItem">

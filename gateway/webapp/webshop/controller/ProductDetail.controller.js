@@ -95,7 +95,7 @@ sap.ui.define(
         getReviewsData: function(that){
           $.ajax({
             type: "GET",
-            url: `/odata/v4/ReviewService/Reviews?$filter=productId eq '${productId}'`,
+            url: `/odata/v4/ReviewService/Reviews?$filter=productId eq '${productId}'&$orderby=createdAt desc`,
             async: true,
             dataType:'json',
             success: function(data, textStatus, request) {
